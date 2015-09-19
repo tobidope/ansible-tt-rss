@@ -8,5 +8,6 @@ ttrss_db_collate: "de_DE.UTF-8"
 ttrss_db_ctype: "de_DE.UTF-8"
 ttrss_git_repo: "https://tt-rss.org/gitlab/fox/tt-rss.git"
 ttrss_install_path: "/var/www/rss"
-ttrss_url_path: "rss"
+ttrss_url_path: "{{ ttrss_install_path | basename }}"
 ttrss_enable_gzip: true
+ttrss_log_destination: syslog

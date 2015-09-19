@@ -12,6 +12,7 @@
   - postgresql
   - python-psycopg2
   - lighttpd
+  - git
 
 - name: "Ensure db user is present"
   become_user: postgres
@@ -36,13 +37,17 @@
     dest: "{{ ttrss_install_path }}"
     depth: 1
 
-- name: Ensure installation is writeable for www-data
+- name: Ensure needed directories are writeable for www-data
   file:
     state: directory
     owner: www-data
     group: www-data
     recurse: yes
-    path: "{{ ttrss_install_path }}"
+    path: "{{ ttrss_install_path }}/{{ item }}"
+  with_items:
+  - cache
+  - feed-icons
+  - lock
 
 - name: Ensure db objects are created
   become_user: postgres
