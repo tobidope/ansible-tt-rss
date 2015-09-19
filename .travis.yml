@@ -24,7 +24,8 @@ script:
   # Run the role/playbook with ansible-playbook.
   - "ansible-playbook -i tests/inventory tests/test.yml --connection=local --sudo"
 
-  - "ansible-playbook -i tests/inventory tests/test.yml --connection=local --sudo"
+  # Debug why lighty makes trouble
+  - "ansible-playbook -i tests/inventory tests/test.yml --connection=local --sudo -v"
 
   # Run the role/playbook again, checking to make sure it's idempotent.
   - >
