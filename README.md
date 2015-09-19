@@ -1,38 +1,65 @@
-Role Name
-=========
+tt-rss
+======
 
-A brief description of the role goes here.
+Installs an instance of Tiny Tiny RSS on a system using PostgreSQL, ready to use.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+No special requirements
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+	# Database user
+	ttrss_db_user: ttrss
+	# Database password, please change when using the role
+	ttrss_db_password: ttrss
+	# Database name
+	ttrss_db_name: ttrss
+	# Database encoding
+	ttrss_db_encoding: "UTF-8"
+	# Databse collation, defines sort order and character classification
+	ttrss_db_collate: "de_DE.UTF-8"
+	# Database ctype, defines character classification
+	ttrss_db_ctype: "de_DE.UTF-8"
+	# URL of the Tiny Tiny RSS git repository, change when you want to use a fork
+	ttrss_git_repo: "https://tt-rss.org/gitlab/fox/tt-rss.git"
+	# Path to the folder, where Tiny Tiny RSS will be installed
+	ttrss_install_path: "/var/www/rss"
+	#  URL PATH of the Tiny Tiny RSS installation, change only when you know what you do
+	ttrss_url_path: "{{ ttrss_install_path | basename }}"
+	# Enable gzip out to improve wire performance, This requires PHP Zlib extension on the server
+	# Set to True or False
+	ttrss_enable_gzip: true
+	# Sets log destination for Tiny Tiny RSS
+	# syslog - logs to system log
+	# sql - logs to database, can be seen in Preferences -> System
+	# '' - uses PHP logging, usually the http server error log
+	ttrss_log_destination: syslog
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+No dependencies
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+         - { role: tt-rss, ttrss_db_password: secret }
 
 License
 -------
 
-BSD
+GPL-V3
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Created by Tobias Bell
+
+* [GitHub](https://github.com/tobidope)
+* [Twitter](https://twitter.com/tobidope)
+
