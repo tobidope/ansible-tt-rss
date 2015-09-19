@@ -50,24 +50,13 @@
   - lock
 
 - name: Ensure db objects are created
-  become_user: postgres
+  environment:
+    PGPASSWORD: "{{ ttrss_db_password }}"
+    PGUSER: "{{ ttrss_db_user }}"
+    PGHOST: localhost
   command: psql -d "{{ttrss_db_name}}" -f "{{ ttrss_install_path }}/schema/ttrss_schema_pgsql.sql"
   args:
     creates: "{{ ttrss_install_path }}/config.php"
-
-- name: Ensure db objects belong to {{ ttrss_db_user }}
-  become_user: postgres
-  postgresql_privs:
-    database: "{{ ttrss_db_name }}"
-    roles: "{{ ttrss_db_user }}"
-    objs: "{{ item.objs }}"
-    privs: "{{ item.privs }}"
-    type: "{{ item.type }}"
-    state: present
-  with_items:
-    - { type: table, privs: "ALL", objs: ALL_IN_SCHEMA }
-    - { type: sequence, privs: "ALL", objs: ALL_IN_SCHEMA }
-    - { type: schema, privs: "ALL", objs: public }
 
 - name: Ensure config.php is present
   template:
