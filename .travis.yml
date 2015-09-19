@@ -24,13 +24,13 @@ script:
   # Run the role/playbook with ansible-playbook.
   - "ansible-playbook -i tests/inventory tests/test.yml --connection=local --sudo"
 
-  # Debug why lighty makes trouble
-  - "ansible-playbook -i tests/inventory tests/test.yml --connection=local --sudo -v"
-
   # Run the role/playbook again, checking to make sure it's idempotent.
   - >
     ansible-playbook -i tests/inventory tests/test.yml --connection=local --sudo
     | grep -q 'changed=0.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
+
+  # See if URL is reachable
+  - "curl --silent http://localhost/rss > /dev/null"
 
