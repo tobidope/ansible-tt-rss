@@ -1,7 +1,6 @@
-[![Build Status](https://travis-ci.org/tobidope/ansible-tt-rss.svg?branch=master)](https://travis-ci.org/tobidope/ansible-tt-rss)
-
 tt-rss
 ======
+[![Build Status](https://travis-ci.org/tobidope/ansible-tt-rss.svg?branch=master)](https://travis-ci.org/tobidope/ansible-tt-rss)
 
 Installs an instance of Tiny Tiny RSS on a system using PostgreSQL, ready to use.
 
@@ -50,12 +49,12 @@ Example Playbook
 
     - hosts: servers
       roles:
-         - { role: tt-rss, ttrss_db_password: secret }
+         - { role: tobias.bell.tt-rss, ttrss_db_password: secret }
 
 License
 -------
 
-GPL-V3
+GPLv3
 
 Author Information
 ------------------
