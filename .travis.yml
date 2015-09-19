@@ -12,6 +12,8 @@ install:
   # Add ansible.cfg to pick up roles path.
   - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"
 
+  - cat ansible.cfg
+
 
 script:
   # Check the role/playbook's syntax.
