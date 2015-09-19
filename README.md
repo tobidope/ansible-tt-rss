@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/tobidope/ansible-tt-rss.svg?branch=master)](https://travis-ci.org/tobidope/ansible-tt-rss)
+
 tt-rss
 ======
 
