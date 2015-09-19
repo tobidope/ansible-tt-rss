@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Tobias Bell <ansible-galaxy@tobiasbell.de>
-  description: 
+  description: Creates a tt-rss instance using PostgreSQL
   license: GPLv3
   min_ansible_version: 1.9
   platforms:
