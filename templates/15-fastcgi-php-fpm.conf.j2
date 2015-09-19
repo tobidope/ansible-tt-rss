@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+# -*- depends: fastcgi -*-
+
+fastcgi.server += ( ".php" => 
+  ((
+    "socket" => "/var/run/php5-fpm.sock"
+  ))    
+)
+

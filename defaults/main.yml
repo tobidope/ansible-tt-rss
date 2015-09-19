@@ -1,0 +1,12 @@
+---
+# defaults file for tt-rss
+ttrss_db_user: ttrss
+ttrss_db_password: ttrss
+ttrss_db_name: ttrss
+ttrss_db_encoding: "UTF-8"
+ttrss_db_collate: "de_DE.UTF-8"
+ttrss_db_ctype: "de_DE.UTF-8"
+ttrss_git_repo: "https://tt-rss.org/gitlab/fox/tt-rss.git"
+ttrss_install_path: "/var/www/rss"
+ttrss_url_path: "rss"
+ttrss_enable_gzip: true

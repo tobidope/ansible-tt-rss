@@ -1,0 +1,112 @@
+---
+# tasks file for tt-rss
+- name: Ensure needed packages are installed
+  apt: name={{ item }} state=present
+  with_items:
+  - php5
+  - php5-pgsql
+  - php5-fpm
+  - php-apc
+  - php5-curl
+  - php5-cli
+  - postgresql
+  - python-psycopg2
+  - lighttpd
+
+- name: "Ensure db user is present"
+  become_user: postgres
+  postgresql_user: 
+    name: "{{ ttrss_db_user }}"
+    password: "{{ ttrss_db_password }}"
+    state: present
+
+- name: "Ensure database is present"
+  become_user: postgres
+  postgresql_db: 
+    name: "{{ ttrss_db_name }}"
+    encoding: "{{ ttrss_db_encoding }}"
+    lc_collate: "{{ ttrss_db_collate }}"
+    lc_ctype: "{{ ttrss_db_ctype }}"
+    template: template0
+    owner: "{{ ttrss_db_user }}"
+
+- name: "Ensure git checkout is available"
+  git:
+    repo: "{{ ttrss_git_repo }}"
+    dest: "{{ ttrss_install_path }}"
+    depth: 1
+
+- name: Ensure installation is writeable for www-data
+  file:
+    state: directory
+    owner: www-data
+    group: www-data
+    recurse: yes
+    path: "{{ ttrss_install_path }}"
+
+- name: Ensure db objects are created
+  become_user: postgres
+  command: psql -d "{{ttrss_db_name}}" -f "{{ ttrss_install_path }}/schema/ttrss_schema_pgsql.sql"
+  args:
+    creates: "{{ ttrss_install_path }}/config.php"
+
+- name: Ensure db objects belong to {{ ttrss_db_user }}
+  become_user: postgres
+  postgresql_privs:
+    database: "{{ ttrss_db_name }}"
+    roles: "{{ ttrss_db_user }}"
+    objs: "{{ item.objs }}"
+    privs: "{{ item.privs }}"
+    type: "{{ item.type }}"
+    state: present
+  with_items:
+    - { type: table, privs: "ALL", objs: ALL_IN_SCHEMA }
+    - { type: sequence, privs: "ALL", objs: ALL_IN_SCHEMA }
+    - { type: schema, privs: "ALL", objs: public }
+
+- name: Ensure config.php is present
+  template:
+    src: config.php.j2
+    dest: "{{  ttrss_install_path }}/config.php"
+
+- name: "Ensure lighttpd is configured"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    validate: "lighttpd -t -f %s"
+  notify: Restart lighttpd
+  with_items:
+    - { src: 20-tt-rss.conf.j2, dest: /etc/lighttpd/conf-available/20-tt-rss.conf }
+    - { src: 15-fastcgi-php-fpm.conf.j2, dest: /etc/lighttpd/conf-available/15-fastcgi-php-fpm.conf }
+
+- name: Ensure lighttpd modules are loaded
+  command: /usr/sbin/lighty-enable-mod "{{ item }}"
+  register: result
+  failed_when: result.rc != 0 and "already enabled" not in result.stdout
+  changed_when: result.rc == 0
+  notify: Restart lighttpd
+  with_items:
+    - tt-rss
+    - fastcgi-php-fpm
+    - expire
+    - fastcgi
+    - accesslog
+
+- name: Ensure init.d script for update-daemon is availaible
+  copy:
+    src: tt-rss
+    dest: /etc/init.d/tt-rss
+    mode: 0755
+
+- name: Ensure config for update-daemon is availaible
+  template:
+    src: default-tt-rss.j2
+    dest: /etc/default/tt-rss
+  notify:
+    - Restart tt-rss daemon
+
+- name: Ensure init.d script for update-daemon is enabled and runs
+  service:
+    name: tt-rss
+    enabled: yes
+    state: started

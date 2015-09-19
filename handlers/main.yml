@@ -1,0 +1,7 @@
+---
+# handlers file for tt-rss
+- name: Restart lighttpd
+  service: name=lighttpd state=restarted
+
+- name: Restart tt-rss daemon
+  service: name=tt-rss state=restarted
